@@ -1,0 +1,23 @@
+This example is an improvement over dummy2.
+When click File->Hello, a dialog pops up. Click OK. A greeting will be print out in the terminal, and the name will show up in the list box.
+
+To run:
+ 
+  1. install luban
+  2. cd into this directory
+  3. ./Dummy.py
+
+Choose File->Hello, there will be a dialog. Click OK will print out a greeting.
+
+Widgets:
+  - menus
+  - splitter
+  - panel
+  - sizer
+  - text
+  - listbox
+  - dialog
+  - button
+  - textfield
+
+

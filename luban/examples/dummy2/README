@@ -1,0 +1,23 @@
+This example is an improvement over "dummy".
+This example has a dialog. 
+
+To run:
+ 
+  1. install luban
+  2. cd into this directory
+  3. ./Dummy.py
+
+Choose File->Hello, there will be a dialog. Click OK will print out a greeting.
+
+Widgets:
+  - menus
+  - splitter
+  - panel
+  - sizer
+  - text
+  - listbox
+  - dialog
+  - button
+  - textfield
+
+

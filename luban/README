@@ -1,0 +1,27 @@
+
+It now can be used to create the histogram GUI with one xml file
+and one controller python module and one model python module. So it is working.
+
+The pattern is model-controller-view. The view is specified by an xml file. The xml file is parsed by a parser developed on top of pyre xml parser and returns a hierarchy of xml elements. A renderer can be used to create gui elements from this hierarchy of xml elements. The xml file describes things like "frame", "panel", "listbox", ... It also has a way to define call back functions (attributes in the xml tag).
+
+The controller only has codes that is generic and has nothing to do with specific implementation of gui toolkits. So developing a gui is now only two things:
+
+1. create models to represent the data that the gui application will be working on
+2. controllers with codes only concerns with operating the models and creating views when requested (responding to events)
+3. xml files to describe the gui elements
+
+
+Event can be specified in attribute of xml tage, sth like
+
+<listbox selectionChange-callback="OnListSelectionChange">
+
+The callback functions can be stacked onto existing callback function by
+
+<pyshell keydown-callback="+OnPythonShellKeyDown">
+
+
+
+Templating is also starting to work: you can create a template xml file that can dynamically generate forms.
+
+Currently only a portion of wx gui elements are implemented.
+

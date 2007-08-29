@@ -1,0 +1,13 @@
+Some test scripts might be helpful:
+   test-pyreapphelp.py
+   test-wxpyregui.py
+   test-text2pyreui.py
+
+
+pyreapphelp.py:
+   pyreapphelp.py -h   (help of pyreapphelp.py command)
+   pyreapphelp.py -a simple.py    (help of simple.py pyre app) 
+   pyreapphelp.py -x   (error message)
+   pyreapphelp.py -v 1000 -a simple.py  (verbosity)
+   pyreapphelp.py --verbose 1000 -a simple.py  (verbosity)
+   pyreapphelp.py  -a simple.py -molecular_dynamics_engine=gulp (change pyreapp options and see a different help)

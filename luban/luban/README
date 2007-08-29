@@ -1,0 +1,36 @@
+To add a new widget:
+
+  gml/elements: add a new class. fix Make.mm
+    This is easy. Just use Button.py as a template and
+    replace button by the name of new widget
+
+  gml/parser: add a new class. fix Make.mm
+    This is not difficult. If the new elment is not a element
+    container like button, use Button.y as a template.
+    If the new element can contain other elements, like
+    panel and dialog, use Dialog.py as template.
+
+    Also goto to each widget that can contain
+    this new widget, add on<widgetname> methods.
+    For example if new widget is TextField, 
+    and method onTextField to widgets that can
+    contain TextField.
+
+  gml/parser/Document.py: add class name
+    Just add the name of the new widget to the list.
+  
+  in every toolkits, implement a new class.
+    - gml/wx. fix Make.mm, __init__.py
+      This is more difficult to explain.
+
+  add a new method to renderer classes
+    - gml/WxRenderers
+
+
+
+FAQ:
+
+ Q.  why I got this error:
+      AttributeError: 'Sizer' object has no attribute 'onPanel'
+ A.  The gml/parser/Sizer does not allow it to contain a Panel.
+     Add "onPanel" method to Sizer class.

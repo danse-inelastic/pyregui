@@ -1,0 +1,25 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Brandon Keith
+#                      California Institute of Technology
+#                        (C) 2005 All Rights Reserved 
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from MolDynamics import MolDynamics
+
+class Gulp(MolDynamics): pass
+
+def molecular_dynamics_engine(): return Gulp('gulp')
+  
+# version
+__id__ = "$Id$"
+
+# Generated automatically by PythonMill on Mon Apr 16 12:44:30 2007
+
+# End of file 

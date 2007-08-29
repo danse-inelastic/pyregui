@@ -1,0 +1,14 @@
+Nothing really useful. It contains:
+
+  - menus
+  - splitter
+  - panel
+  - sizer
+  - text
+  - listbox
+
+To run:
+
+  1. install luban
+  2. cd into this directory
+  3. ./Dummy.py
