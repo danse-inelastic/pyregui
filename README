@@ -1,0 +1,47 @@
+Jiao Make sure that these work ?
+
+Are there cases where wxapp.py work and wxapp_1 doesn't ?
+
+wxapp.py ../sudoku_solver.py
+wxapp.py ../queens2.py
+
+wxapp.py ../sudoku_solver.pyc
+wxapp.py ../queens2.pyc
+
+
+wxapp_1.py ../sudoku_solver.py
+wxapp_1.py ../queens2.py
+
+wxapp_1.py ../sudoku_solver.pyc
+wxapp_1.py ../queens2.pyc
+
+Is there a reason why WxAppFactory is a class with a __call__
+method ? Any reasons why it can't be simply the following ?
+
+def wxAppFactory(PyreAppClass, pyreapp_executable):
+   class WxApp( PyreAppClass, wxPyreMixin, NewRun_for_PyreApp ):
+
+       __doc__ = PyreAppClass.__doc__
+
+
+       def __init__(self):
+           PyreAppClass.__init__(self)
+           wxPyreMixin.__init__(self, pyreapp_executable)
+           return
+
+
+       def run(self): return NewRun_for_PyreApp.run(self)
+
+
+       def collectConfigurationsFromGui(self):
+           self.enterWindowEventLoop()
+           return
+
+
+       pass # end of WxApp
+
+
+   return WxApp
+
+
+# end of file
