@@ -21,7 +21,7 @@ class MainWindowApp(wx.PySimpleApp):
     
 
     def OnInit(self):
-        #Brandon found that there is a 64-bit bug with wx.Image
+        #there is a 64-bit bug with wx.Image
         #(2.8.4.2). We better make sure we can deal with case
         #where we cannot display logo.
         try:
