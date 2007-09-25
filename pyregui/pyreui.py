@@ -79,15 +79,21 @@ def usage( appname ):
     return "Usage: %s path_to_pyre_application [pyre_application_class_name] " % ( appname, )
 
 
-def mainTemplate( guitoolkit ):
+def mainTemplate( guitoolkit, *args):
     import sys
     if len(sys.argv) not in [2,3]:
-       print usage(sys.argv[0])
-       sys.exit(1)
-
-    appfilename = sys.argv[1]
-    appClassName = None
-    if len(sys.argv) == 3: appClassName = sys.argv[2]
+        if args:
+            appfilename=args[0]
+        else:
+            print usage(sys.argv[0])
+            sys.exit(1)
+        appClassName = None
+    elif len(sys.argv)==2:
+        appfilename = sys.argv[1]
+        appClassName = None
+    elif len(sys.argv)==3:
+        appfilename = sys.argv[1]
+        appClassName = sys.argv[2]
 
     import journal
     journal.error("pyre.inventory").deactivate()

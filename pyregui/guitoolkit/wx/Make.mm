@@ -37,6 +37,7 @@ all: export
 EXPORT_PYTHON_MODULES = \
 	InputBoxFactory.py \
 	InventoryDialog.py \
+	LargeTextLoader.py \
 	MainFrame.py \
 	MainFrameDocBox.py \
 	MainPanel.py \

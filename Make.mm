@@ -6,8 +6,6 @@
 #                        California Institute of Technology
 #                        (C) 1998-2005 All Rights Reserved
 #
-# <LicenseText>
-#
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 PROJECT = pyregui

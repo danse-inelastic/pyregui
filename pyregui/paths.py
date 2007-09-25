@@ -55,10 +55,20 @@ except ImportError:
 
 
 def find_resources():
-    "find the installation directory of 'resouces'"
-    return os.path.join( paths.data, name, "resources" )
-    home = os.path.expanduser( '~' )
-    return os.path.join(home, 'DANSE' , 'pyregui', 'resources' )
+    '''find the installation directory of 'resouces'
+    
+If the file 'alternateDirectory.txt' is found in the same directory
+as paths.py, a different path for resources will be used.    
+'''    
+    try:
+        import os
+        print os.getcwd()
+        f=file('alternateDirectory.txt','r')
+        newpath=f.readline()
+        f.close()
+        return newpath
+    except:
+        return os.path.join( paths.data, name, "resources" )
 
 resources = find_resources()
 

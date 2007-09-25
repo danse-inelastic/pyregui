@@ -25,7 +25,8 @@ class MainWindowApp(wx.PySimpleApp):
         #(2.8.4.2). We better make sure we can deal with case
         #where we cannot display logo.
         try:
-            image = wx.Image(self.buttonfile, wx.BITMAP_TYPE_PNG)
+            raise
+            #image = wx.Image(self.buttonfile, wx.BITMAP_TYPE_PNG)
         except:
             image = None
             pass
