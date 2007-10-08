@@ -4,22 +4,18 @@ import wx
 class LargeTextLoader(wx.Dialog):
     '''loads a large amount of text'''
 
-
     def registerInputBox( self, trait, box ):
         self._registry.register( "inputBox", trait, box )
         return
-
 
     def getUserInput( self, trait ):
         inputBox = self._registry.get( "inputBox", trait )
         return inputBox.GetValue().strip()
 
-
     def setUserInput( self, trait, value):
         inputBox = self._registry.get( "inputBox", trait )
         inputBox.SetValue( value )
         return
-
 
     def getGuiElement( self, category, trait):
         return self._registry.get(category, trait )

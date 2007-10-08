@@ -40,9 +40,9 @@ class SetButtonFactory(Base):
         b.SetToolTipString( "choose directory for %s from browser" % prop.tip())
         return b
     
-    def onLoadAtoms(self, fac):
+    def onLargeTextLoad(self, fac):
         b = wx.Button(self.parent, label="Set")
-        self.parent.Bind(wx.EVT_BUTTON, self.SetAtoms( fac ),  b)
+        self.parent.Bind(wx.EVT_BUTTON, self.SetLargeText( fac ),  b)
         b.SetToolTipString( "input atomic information")
         return b    
     
@@ -74,7 +74,7 @@ class SetButtonFactory(Base):
         return _
 
     
-    def SetAtoms(self, fac):
+    def SetLargeText(self, fac):
         
         def _(event):
              dialog = LargeTextLoader( self.parent)
@@ -124,7 +124,7 @@ class SetButtonFactory(Base):
             if trait.type() == "inputfile" : return self.onInputfile( trait )
             if trait.type() == "outputdir" : return self.onOutputDir( trait )
         else:
-            if trait.name() == "Atomic/Species information" : return self.onLoadAtoms( trait )
+            if trait.name() == "Atomic/Species information" : return self.onLargeTextLoad( trait )
             pass
         
         return Base.createGuiElement(self, trait)
