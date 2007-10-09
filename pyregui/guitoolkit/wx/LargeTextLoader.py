@@ -99,6 +99,9 @@ class LargeTextLoader(wx.Dialog):
 
         #print "%s.__init__ done" % self.__class__.__name__
         return
+    
+    def getText(self):
+        return self.largeText.GetValue()
 
 
     def get_action_window(self):
