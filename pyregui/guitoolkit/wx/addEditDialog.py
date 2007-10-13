@@ -42,3 +42,16 @@ class Dialog1(wx.Dialog):
 
     def __init__(self, parent):
         self._init_ctrls(parent)
+        self.table = TwoAtomPotentialTable()
+        self.grid1.SetTable(self.table)
+        self.setGridConditions()
+        gridlib.EVT_GRID_CELL_LEFT_DCLICK(self, self.OnLeftDClick)
+        gridlib.EVT_GRID_CELL_CHANGE(self, self.OnCellChange)
+        #self.Bind(gridlib.EVT_GRID_CELL_CHANGE, self.OnCellChange)
+        
+    def setGridConditions(self):
+        self.SetRowLabelSize(0)
+        self.SetColLabelSize(0)
+        self.SetMargins(0,0)
+        self.AutoSizeColumns(True)
+        self.SetDefaultCellAlignment(wx.ALIGN_LEFT, wx.ALIGN_CENTRE)
