@@ -82,7 +82,7 @@ class SetButtonFactory(Base):
              if dialog.ShowModal() == wx.ID_OK:
                  #component = fac.getComponent()
                  component = fac.component()
-                 component.setAtoms( dialog.getText() )
+                 component.setText(dialog.getText())
             #newComponentName = self.parent.getUserInput( facility )
             #print "new component name", newComponentName
             #inventory = self.parent.inventory
@@ -126,7 +126,8 @@ class SetButtonFactory(Base):
             if trait.type() == "inputfile" : return self.onInputfile( trait )
             if trait.type() == "outputdir" : return self.onOutputDir( trait )
         else:
-            if trait.name() == "Atomic/Species information" : return self.onLargeTextLoad( trait )
+            if trait.name() == "Atomic/Species information" or trait.name() == "Forcefield": 
+                return self.onLargeTextLoad( trait )
             pass
         
         return Base.createGuiElement(self, trait)
