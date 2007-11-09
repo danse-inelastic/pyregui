@@ -76,11 +76,12 @@ class SetButtonFactory(Base):
     
     def SetLargeText(self, fac):
         # eventually this can be generalized to load any multiline text 
-        # for now, however, it only calls the setAtoms method of AtomLoader in UnitCellBuilder.py
+        # for now, however, it only calls the setAtoms method of AtomLoader in danse.us/crystal/UnitCellBuilder.py
         def _(event):
              dialog = LargeTextLoader( self.parent)
              if dialog.ShowModal() == wx.ID_OK:
-                 component = fac.getComponent()
+                 #component = fac.getComponent()
+                 component = fac.component()
                  component.setAtoms( dialog.getText() )
             #newComponentName = self.parent.getUserInput( facility )
             #print "new component name", newComponentName

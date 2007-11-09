@@ -39,6 +39,7 @@ def getPyreApp( pathToExecutable, appClassName = None ):
         # Looking for classes that subclasses Application
         try:
             debug.log ("test if %s is a pyre application" % item) 
+            #print Application
             if issubclass(item, Application):
                 Apps.append( item )
                 pass

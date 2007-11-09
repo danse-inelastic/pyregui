@@ -45,7 +45,7 @@ EXPORT_PYTHON_MODULES = \
 
 
 
-include doxygen/default.def
+#include doxygen/default.def
 
 export:: export-python-modules 
 
