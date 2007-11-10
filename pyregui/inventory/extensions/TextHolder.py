@@ -1,4 +1,4 @@
-from pyre.component.Component import Component
+from pyre.components.Component import Component
 
 
 
