@@ -125,11 +125,10 @@ class SetButtonFactory(Base):
         if isinstance( trait, PropertyProxy ):
             if trait.type() == "inputfile" : return self.onInputfile( trait )
             if trait.type() == "outputdir" : return self.onOutputDir( trait )
-            if trait.type() == "textholder" : return self.onLargeTextLoad(trait)
-#        else:
-#            if trait.name() == "Atomic/Species information" or trait.name() == "Forcefield": 
-#                return self.onLargeTextLoad( trait )
-#            pass
+        else:
+#            if trait.type() == "textholder" : return self.onLargeTextLoad(trait)
+            if trait.name() == "Atomic/Species information" or trait.name() == "Forcefield": 
+                return self.onLargeTextLoad( trait )
         
         return Base.createGuiElement(self, trait)
     

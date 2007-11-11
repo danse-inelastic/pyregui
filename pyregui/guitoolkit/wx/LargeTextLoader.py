@@ -1,6 +1,5 @@
 import wx
 
-
 class LargeTextLoader(wx.Dialog):
     '''loads a large amount of text'''
 
@@ -35,11 +34,8 @@ class LargeTextLoader(wx.Dialog):
                  ):
 
         self.parent = parent
-
         self.toolkit = toolkit
-
 #        self._registry = GuiElementRegistry()
-        
 #        self.inventory = InventoryProxy(pyre_inventory)
         self.pyre_component = pyre_component
         self.verbosity = verbosity
