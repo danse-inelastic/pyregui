@@ -127,8 +127,11 @@ class SetButtonFactory(Base):
             if trait.type() == "outputdir" : return self.onOutputDir( trait )
         else:
 #            if trait.type() == "textholder" : return self.onLargeTextLoad(trait)
-            if trait.name() == "Atomic/Species information" or trait.name() == "Forcefield": 
+            if trait.name() == "Atomic/Species information": 
                 return self.onLargeTextLoad( trait )
+            if trait.name() == "forcefield":
+                if trait._inv.forcefield.name == "gulpLibrary":
+                    return self.onLargeTextLoad( trait )
         
         return Base.createGuiElement(self, trait)
     
