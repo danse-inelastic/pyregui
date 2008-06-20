@@ -19,8 +19,6 @@ warning = journal.warning("HistogramPlotPanel")
 
 import wx
 
-
-
 from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg, Toolbar, FigureManager
 from matplotlib.figure import Figure
 
@@ -102,11 +100,24 @@ class HistogramPlotPanel(wx.Panel):
         "make pylab commands plot to my canvas"
         def gcf(): return self.figure
         def gci(): return self.plotter.image()
+        
         import matplotlib.pylab as mp
         import pylab
-        
-        pylab.gcf = mp.gcf = gcf
-        pylab.gci = mp.gci = gci
+
+        tobeoveride = [ mp, pylab ]
+
+        #for newer matplotlib (for example 0.91.2), plotting functions
+        #are in matplotlib.pyplot
+        try:
+            import matplotlib.pyplot as mp
+            tobeoveride.append( mp )
+        except ImportError:
+            pass
+
+        for m in tobeoveride:
+            m.gcf = gcf
+            m.gci = gci
+            continue
         return 
     
 
