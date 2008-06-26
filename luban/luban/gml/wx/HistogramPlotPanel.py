@@ -92,8 +92,19 @@ class HistogramPlotPanel(wx.Panel):
         saved by this gui control"""
         canvas = self.canvas
         # Fetch the required filename and file type.
-        filetypes = canvas._get_imagesave_wildcards()
-        return filetypes
+
+        # wx 2.6: getPictureTypes return a string
+        # wx 2.8: getPictureTypes return a tuple
+        tmp = canvas._get_imagesave_wildcards()
+        
+        if '__iter__' in dir(tmp):
+            # wx 2.8
+            filetypesstr, filetypeslist, n = tmp
+        else:
+            # wx 2.6
+            filetypesstr = tmp
+            
+        return filetypesstr
 
 
     def makePylabUsable(self):

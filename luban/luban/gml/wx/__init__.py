@@ -120,8 +120,10 @@ def messageDialog(parentWindow, title, message):
 
 def savefileDialog(parentWindow, title, filetypes):
     import wx
-    dlg =wx.FileDialog(parentWindow, title, "", "", filetypes,
-                       wx.SAVE|wx.OVERWRITE_PROMPT|wx.CHANGE_DIR)
+    dlg =wx.FileDialog(parentWindow, message = title,
+                       defaultDir = "", defaultFile = "",
+                       wildcard = filetypes,
+                       style = wx.SAVE|wx.OVERWRITE_PROMPT|wx.CHANGE_DIR)
     rt = None
     if dlg.ShowModal() == wx.ID_OK:
         dirname  = dlg.GetDirectory()
