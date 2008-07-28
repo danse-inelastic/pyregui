@@ -9,82 +9,55 @@
 #
 
 """
-Using os.system to launch pyre applications for now...
-
+For executing a command and catch output and error output.
+error code is returned.
+error code is also printed out to the end of the
 """
 
 
-import types
+import types, sys
 
 
-def spawn(command, search_path = 1, dry_run = 0, env = None, 
-          remote = False, remote_server = "", rsh = "rsh -.",
-          logfile = "run.log", errlogfile = None):
+def spawn(command, dry_run = 0, env = None, 
+          logstream = None, errlogstream = None):
     """
     command: command to run
     env: environment variables to pass to the process in which the command will be executed
-    search_path: search for command in PATH
     dry_run: if true, only print the command to be excuted
-    remote: if true, spawn on remote host
-    remote_server: if remote is true, the server to run the command
-    rsh: rsh comand to connect to remote server. default "rsh -."
-    logfile: log file name
-    errlogfile: error log file name. default to logfile
+    logstream: output stream
+    errlogstream: error log file name. default to logstream
     """
+    if logstream is None and errlogstream is None: errlogstream = sys.stderr
+    if logstream is None: logstream = sys.stdout
+    if errlogstream is None: errlogstream = logstream
 
-    if type(command) == list:
+    if isinstance(command, list):
         cmd = ' '.join(command)
     else:
-        assert(type(command) == types.StringType)
+        assert isinstance(command, basestring)
         cmd = command
         pass
-    #this implementation is not good enough. it will have problems when
-    #'cmd' has quotes in it
-    #"echo $?" is used to get exit code from rsh
-    #but this trick does not get the job done when mpiexec is used to
-    #lauch parallel job. mpiexec does not return a non-zero exit code
-    #when subprocess are doing wrong. how to solve this problem??
-    if remote: cmd = r'%s %s "%s %s" \; echo $?' % (
-        rsh, remote_server, envvar_assignments(env), cmd)
+
     if dry_run:
-        print "Command to execute: \n%s" % cmd
+        print " * Command to execute: \n    %s" % cmd
         return 
 
-    print "Executing: \n%s" % cmd
-    #if ret: raise "%s failed" % cmd
-    import subprocess
-    log = open( logfile, 'w' ); log.write( cmd+'\n' ); log.close()
-    log = open( logfile, 'a' )
+    print "Executing: %s" % cmd
     
-    if errlogfile : errlog = open(errlogfile, 'w+' )
-    else: errlog = log
+    import subprocess
+    #log = open( logfile, 'w' ); log.write( cmd+'\n' ); log.close()
+    #log = open( logfile, 'a' )
+    logstream.write( cmd + '\n' )
 
-    if remote: p = subprocess.Popen( cmd, stdout = log, stderr = errlog, shell = True)
-    else: p = subprocess.Popen(
-        cmd, stdout = log, stderr = errlog, shell = True, env = env)
+    p = subprocess.Popen(
+        cmd, stdout = logstream, stderr = errlogstream, shell = True, env = env)
     ret = p.wait()
     del p
-    log.close(); errlog.close()
-    
-    log = open( logfile, 'r')
-    outputs = log.readlines()
-    log.close()
-    msg = "Error: %s failed\n" % cmd
-    msg += "Outputs: \n%s" % ''.join( outputs[-5:] )
-    
-    if remote: ret = int(outputs[-1].strip())
-    if ret:
-        import sys
-        print >>sys.stderr, ''.join(outputs)
-        raise RuntimeError, msg
-    return
 
-
-def envvar_assignments(env):
-    if env is None: env = {}
-    r = []
-    for key,val in env.iteritems(): r.append( "%s=%s" % (key,val) )
-    return ' && '.join(r)
+    logstream.write( 'return value: %s\n' % ret )
+    #log.close(); errlog.close()
+    
+    return ret
 
 
 
@@ -97,39 +70,22 @@ class Spawn_TestCase(TestCase):
 
     def test_localenv(self):
         "spawn: local, env"
-        logfile="test_localenv.log" 
-        spawn( "env | grep XXX", remote=0, env={"XXX":"hello"}, logfile = logfile )
+        logfile = 'test_localenv.log' 
+        logstream = open( logfile , 'w' )
+        spawn( "env | grep XXX", env={"XXX":"hello"}, logstream = logstream )
+        logstream.close()
         assignment = findAssignment( logfile, "XXX" )
         self.assert_( assignment )
         XXX = todict( assignment ) .get("XXX")
         self.assert_( XXX == "hello" )
 
         #test env=None
-        spawn( "env", remote=0, env=None, logfile = logfile )
-        return
-
-    def test_remoteenv(self):
-        "spawn: remote, env"
-        logfile="test_remoteenv.log"
-        spawn( "env | grep XXX", remote=1, remote_server = "n01", env={"XXX":"hello"},
-               logfile = logfile )
-        assignment = findAssignment( logfile, "XXX" )
-        self.assert_( assignment )
-        XXX = todict( assignment ) .get("XXX")
-        self.assert_( XXX == "hello" )
-
-        #test env=None
-        spawn( "env", remote=1, remote_server = "n01", env=None, logfile = logfile )
+        spawn( "env", env=None, logstream = open(logfile,'w') )
         return
 
     def test_local(self):
         "spawn: local"
-        spawn( "echo", remote=0)
-        return
-
-    def test_remote(self):
-        "spawn: remote"
-        spawn( "echo", remote=1, remote_server = "n01")
+        spawn( "echo")
         return
 
     pass # end of TestCase

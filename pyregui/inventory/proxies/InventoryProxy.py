@@ -63,6 +63,7 @@ class InventoryProxy( object ):
 
     def traits(self, verbosity = 1):
         res = self.properties(verbosity = verbosity) + self.facilities(verbosity = verbosity)
+        res.sort( key = lambda x: x.name() )
         res.sort( lambda x,y: y.importance() - x.importance() )
         return res
 

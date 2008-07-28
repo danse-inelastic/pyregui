@@ -41,6 +41,7 @@ EXPORT_PYTHON_MODULES = \
 	mpich_launcher.py \
 	mpich2_launcher.py \
 	serial_launcher.py \
+	remote_spawn.py \
 	spawn.py \
 
 

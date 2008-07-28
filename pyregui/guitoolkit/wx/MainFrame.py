@@ -134,9 +134,8 @@ class MainPanel(wx.Panel):
             launcherApp.run( self.pyreapp_executable )
             m = "%s done successfully" % self.pyreapp_executable
         except Exception, err:
-            #import traceback
-            #msg = traceback.print_exc()
-            m = str(err)
+            import traceback
+            m = traceback.format_exc()
             pass
         wx.MessageBox( m, "" )
         return
