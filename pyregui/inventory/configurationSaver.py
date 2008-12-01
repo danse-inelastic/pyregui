@@ -5,6 +5,7 @@ def retrieveConfiguration(inventory, registry):
 
     from pyre.inventory.Facility import Facility
     from pyre.inventory.Property import Property
+    from pyre.components.Component import Component
     from journal.components.Journal import Journal
 
     node = registry.getNode(inventory._priv_name)
@@ -19,7 +20,7 @@ def retrieveConfiguration(inventory, registry):
         if name == "weaver": continue
         #if isinstance(prop, Property) and value == prop.default: continue
         if isinstance(prop, Facility) and isinstance(value, Journal): continue
-        if value and isinstance(prop, Facility): value = value.name
+        if isinstance(value,Component) and isinstance(prop, Facility): value = value.name
 
         node.setProperty(name, value, locator)
         continue
