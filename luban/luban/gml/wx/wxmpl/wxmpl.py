@@ -6,6 +6,8 @@
 #
 # See the file "LICENSE" for information on usage and redistribution
 # of this file, and for a DISCLAIMER OF ALL WARRANTIES.
+#
+#Updated by Paulo Meira to work with matplotlib 0.98.3
 
 """
 Embedding matplotlib in wxPython applications is straightforward, but the
@@ -14,25 +16,25 @@ WxMpl (wxPython+matplotlib) is a library of components that provide these
 missing features in the form of a better matplolib FigureCanvas.
 """
 
-
+from matplotlib.transforms import Bbox as BoundingBox
 import wx
 import sys
 import os.path
 import weakref
 
 import matplotlib
+from matplotlib.backend_bases import MouseEvent
 matplotlib.use('WXAgg')
 import matplotlib.numerix as Numerix
-from matplotlib.axes import PolarAxes, _process_plot_var_args
+from matplotlib.axes import _process_plot_var_args
 from matplotlib.backend_bases import FigureCanvasBase
 from matplotlib.backends.backend_agg import FigureCanvasAgg, RendererAgg
 from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg
 from matplotlib.figure import Figure
 from matplotlib.font_manager import FontProperties
-from matplotlib.transforms import Bbox, Point, Value
-from matplotlib.transforms import bound_vertices, inverse_transform_bbox
+from matplotlib.projections import PolarAxes
 
-__version__ = '1.2.8-dev'
+__version__ = '1.2.9'
 
 __all__ = ['PlotPanel', 'PlotFrame', 'PlotApp', 'StripCharter', 'Channel',
     'FigurePrinter', 'EVT_POINT', 'EVT_SELECTION']
@@ -68,8 +70,9 @@ def find_axes(canvas, x, y):
     """
 
     axes = None
+    evt = MouseEvent('', canvas, x, y)
     for a in canvas.get_figure().get_axes():
-        if a.in_axes(x, y):
+        if a.in_axes(evt):
             if axes is None:
                 axes = a
             else:
@@ -78,7 +81,7 @@ def find_axes(canvas, x, y):
     if axes is None:
         return None, None, None
 
-    xdata, ydata = axes.transData.inverse_xy_tup((x, y))
+    xdata, ydata = axes.transData.inverted().transform_point((x, y))
     return axes, xdata, ydata
 
 
@@ -86,7 +89,7 @@ def get_bbox_lims(bbox):
     """
     Returns the boundaries of the X and Y intervals of a C{Bbox}.
     """
-    return bbox.intervalx().get_bounds(), bbox.intervaly().get_bounds()
+    return bbox.intervalx, bbox.intervaly
 
 
 def find_selected_axes(canvas, x1, y1, x2, y2):
@@ -99,10 +102,10 @@ def find_selected_axes(canvas, x1, y1, x2, y2):
     overlaps, a 3-tuple of C{None}s is returned.
     """
     axes = None
-    bbox = bound_vertices([(x1, y1), (x2, y2)])
+    bbox = BoundingBox.from_extents(x1, y1, x2, y2)
 
     for a in canvas.get_figure().get_axes():
-        if bbox.overlaps(a.bbox):
+        if bbox.count_overlaps([a.bbox]):
             if axes is None:
                 axes = a
             else:
@@ -113,7 +116,7 @@ def find_selected_axes(canvas, x1, y1, x2, y2):
 
     xymin, xymax = limit_selection(bbox, axes)
     xrange, yrange = get_bbox_lims(
-        inverse_transform_bbox(axes.transData, bound_vertices([xymin, xymax])))
+        BoundingBox.from_extents([xymin, xymax]).inverse_transformed(axes.transData))
     return axes, xrange, yrange
 
 
@@ -327,12 +330,12 @@ class PlotPanelDirector(DestructableViewMixin):
         axes, xrange, yrange = find_selected_axes(view, x0, y0, x, y)
 
         if axes is not None:
-            xdata, ydata = axes.transData.inverse_xy_tup((x, y))
+            xdata, ydata = axes.transData.inverted().transform_point((x, y))
             if self.zoomEnabled:
                 if self.limits.set(axes, xrange, yrange):
                     self.view.draw()
             else:
-                bbox = bound_vertices([(x0, y0), (x, y)])
+                bbox = BoundingBox.from_extents(x0, y0, x, y)
                 (x1, y1), (x2, y2) = limit_selection(bbox, axes)
                 self.view.notify_selection(axes, x1, y1, x2, y2)
 
@@ -598,7 +601,7 @@ class CrosshairPainter(Painter):
         Converts the C{(X, Y)} mouse coordinates from matplotlib to wxPython.
         """
         x, y = value
-        return int(x), int(self.view.get_figure().bbox.height() - y)
+        return int(x), int(self.view.get_figure().bbox.height - y)
 
     def drawValue(self, dc, value):
         """
@@ -627,7 +630,7 @@ class RubberbandPainter(Painter):
         wxPython.
         """
         x1, y1, x2, y2 = value
-        height = self.view.get_figure().bbox.height()
+        height = self.view.get_figure().bbox.height
         y1 = height - y1
         y2 = height - y2
         if x2 < x1: x1, x2 = x2, x1
@@ -921,8 +924,8 @@ class FigurePrintout(wx.Printout):
         old_frameon = figure.frameon
         figure.frameon = False
 
-        wFig_Px = int(figure.bbox.width())
-        hFig_Px = int(figure.bbox.height())
+        wFig_Px = int(figure.bbox.width)
+        hFig_Px = int(figure.bbox.height)
 
         agg = RendererAgg(wFig_Px, hFig_Px, Value(dpi))
         figure.draw(agg)
@@ -972,7 +975,7 @@ class PointEvent(wx.PyCommandEvent):
         self.axes = axes
         self.x = x
         self.y = y
-        self.xdata, self.ydata = axes.transData.inverse_xy_tup((x, y))
+        self.xdata, self.ydata = axes.transData.inverted().transform_point((x, y))
 
     def Clone(self):
         return PointEvent(self.GetId(), self.axes, self.x, self.y)
@@ -1017,8 +1020,8 @@ class SelectionEvent(wx.PyCommandEvent):
         self.y1 = y1
         self.x2 = x2
         self.y2 = y2
-        self.x1data, self.y1data = axes.transData.inverse_xy_tup((x1, y1))
-        self.x2data, self.y2data = axes.transData.inverse_xy_tup((x2, y2))
+        self.x1data, self.y1data = axes.transData.inverted().transform_point((x1, y1))
+        self.x2data, self.y2data = axes.transData.inverted().transform_point((x2, y2))
 
     def Clone(self):
         return SelectionEvent(self.GetId(), self.axes, self.x1, self.y1,
@@ -1175,7 +1178,7 @@ class PlotPanel(FigureCanvasWxAgg):
         """
         return self.director.zoomed(axes)
 
-    def draw(self, repaint=True):
+    def draw(self, drawDC=None, repaint=True):
         """
         Draw the associated C{Figure} onto the screen.
         """
@@ -1202,7 +1205,7 @@ class PlotPanel(FigureCanvasWxAgg):
             if doRepaint:
                 self.gui_repaint()
         else:
-            FigureCanvasWxAgg.draw(self, repaint)
+            FigureCanvasWxAgg.draw(self, drawDC)
 
         # Don't redraw the decorations when called by _onPaint()
         if doRepaint:
@@ -1228,7 +1231,7 @@ class PlotPanel(FigureCanvasWxAgg):
         Returns the X and Y coordinates of a wxPython event object converted to
         matplotlib canavas coordinates.
         """
-        return evt.GetX(), int(self.figure.bbox.height() - evt.GetY())
+        return evt.GetX(), int(self.figure.bbox.height - evt.GetY())
 
     def _onKeyDown(self, evt):
         """
