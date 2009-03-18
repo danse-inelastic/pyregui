@@ -73,14 +73,16 @@ class HistogramPlotPanel(wx.Panel):
         try:
             self.plotter.plot( hist )
             self.image = self.plotter.image()
+            self.canvas.draw()
         except Exception, err:
-            print "%s: %s" % (err.__class__.__name__, err)
+            import traceback
+            traceback.print_exc()
             self.plot.clear()
             pass
         self.Refresh()
         return
 
-
+    
     def savePlot(self, filename):
         "use the plot"
         self.canvas.print_figure(filename)
@@ -123,6 +125,8 @@ class HistogramPlotPanel(wx.Panel):
             import matplotlib.pyplot as mp
             tobeoveride.append( mp )
         except ImportError:
+            import traceback
+            traceback.print_exc()
             pass
 
         for m in tobeoveride:
