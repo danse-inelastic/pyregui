@@ -172,6 +172,10 @@ class AxesLimits:
         axes should be redraw is returned, because polar axes cannot have
         their limits changed sensibly.
         """
+        #print "AxesLimits.set", xrange, yrange
+        # temp hack to deal with the "axis-reversal" bug
+        for r in [xrange, yrange]: r.sort()
+            
         if is_polar(axes):
             return False
 
