@@ -68,17 +68,7 @@ class HistogramPlotPanel(wx.Panel):
 
 
     def update(self, hist):
-        self.plotter.clear()
-        self.Refresh()
-        try:
-            self.plotter.plot( hist )
-            self.image = self.plotter.image()
-            self.canvas.draw()
-        except Exception, err:
-            import traceback
-            traceback.print_exc()
-            self.plot.clear()
-            pass
+        self.plotter.plot( hist )
         self.Refresh()
         return
 
@@ -133,7 +123,15 @@ class HistogramPlotPanel(wx.Panel):
             m.gcf = gcf
             m.gci = gci
             continue
-        return 
+        return
+
+
+    def Refresh(self):
+        # base class's Refresh does not seem to workoing
+        # reload this method and ask canvas to draw
+        super(HistogramPlotPanel, self).Refresh()
+        self.canvas.draw()
+        return
     
 
     def GetToolBar(self):
