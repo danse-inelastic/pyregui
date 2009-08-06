@@ -28,6 +28,7 @@ def retrieveConfiguration(inventory, registry):
     for fac in inventory.facilities():
         component = fac.__get__(inventory)
         if isinstance(component, Journal): continue
+        if component.name in ['weaver']: continue
         if component is None:
             raise RuntimeError, "Unable to retrieve component for facility %s" % fac.name
         retrieveConfiguration(component.inventory, node)
